@@ -45,12 +45,6 @@ jobs:
         cp ../README.md .
         pwd; ls -lah
 
-        ## Add libxcb-cursor from Ubuntu
-        #cd calibre/lib/
-        #wget -q https://github.com/ryuuzaki42/Calibre_AppImage/releases/download/main-00000000/libxcb-cursor.so.0.0.0
-        #ln -s libxcb-cursor.so.0.0.0 libxcb-cursor.so.0
-        #pwd; ls -lah
-
     #- name: Get appimagetool
     #  run: |
     #    set -x
@@ -102,9 +96,7 @@ jobs:
         echo "Generating zsync file..."
         zsyncmake *.AppImage -u *.AppImage
 
-        fileName=$(ls NetBeans*.AppImage)
-        echo "fileName: $fileName"
-        md5sum "$fileName" > "${fileName}.md5"
+        md5sum $name_prog > ${name_prog}.md5
         md5sum netbeans-${version}-bin.zip > netbeans-${version}-bin.zip.md5
         pwd; ls -lah
 
