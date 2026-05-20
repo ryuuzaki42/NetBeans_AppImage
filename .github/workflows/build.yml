@@ -36,7 +36,7 @@ jobs:
         ./netbeans' > AppRun
         chmod +x AppRun
 
-        wget -q https://archive.apache.org/dist/netbeans/netbeans/$version/netbeans-${version}-bin.zip
+        wget https://archive.apache.org/dist/netbeans/netbeans/$version/netbeans-${version}-bin.zip
         unzip netbeans-${version}-bin.zip
         pwd; ls -lah
 
