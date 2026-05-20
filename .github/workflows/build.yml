@@ -38,7 +38,7 @@ jobs:
 
         wget https://archive.apache.org/dist/netbeans/netbeans/$version/netbeans-${version}-bin.zip
         unzip netbeans-${version}-bin.zip
-        rm -v netbeans-${version}-bin.zip
+        mv netbeans-${version}-bin.zip ../
         pwd; ls -lah
 
         wget https://github.com/ryuuzaki42/NetBeans_AppImage/releases/download/main-0000/netbeans.svg
@@ -105,13 +105,14 @@ jobs:
         fileName=$(ls NetBeans*.AppImage)
         echo "fileName: $fileName"
         md5sum "$fileName" > "${fileName}.md5"
+        md5sum netbeans-${version}-bin.zip > netbeans-${version}-bin.zip.md5
         pwd; ls -lah
 
     - uses: xresloader/upload-to-github-release@v1
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          file: "NetBeans*.AppImage; NetBeans*.zsync; NetBeans*.md5"
+          file: "NetBeans*.AppImage; NetBeans*.zsync; NetBeans*.md5; netbeans*zip; netbeans*zip.md5""
           #overwrite: true
           verbose: true
           draft: false
