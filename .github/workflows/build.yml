@@ -43,9 +43,10 @@ jobs:
         ./calibre' > AppRun
         chmod +x AppRun
 
-        mkdir -p calibre/
-        cd calibre/
-        curl -o - https://archive.apache.org/dist/netbeans/netbeans/$version/netbeans-${version}-bin.zip | tar -xJf -
+        #mkdir -p calibre/
+        #cd calibre/
+        wget https://archive.apache.org/dist/netbeans/netbeans/$version/netbeans-${version}-bin.zip
+        #curl -o - https://archive.apache.org/dist/netbeans/netbeans/$version/netbeans-${version}-bin.zip | tar -xJf -
         pwd; ls -lah
 
         cd ../
