@@ -1,0 +1,126 @@
+name: Create new release
+
+on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "!**"
+
+jobs:
+  build:
+    name: Build
+    #runs-on: ubuntu-22.04 # Use program pre-built, don't make difference witch Ubuntu version
+    runs-on: ubuntu-24.04
+    #runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+    - name: Install fuse and libfuse2
+      run: sudo apt install fuse libfuse2
+
+    - name: Make Calibre AppDir/
+      run: |
+        set -x
+        version=$(grep -o "Calibre:.*" README.md | cut -d ' ' -f2)
+
+        mkdir squashfs-root/
+        cd squashfs-root/
+
+        echo '[Desktop Entry]
+        Type=Application
+        Name=Calibre
+        Comment=E-Book Management
+        Exec=calibre %F
+        Icon=Calibre
+        MimeType=application/x-mobipocket-ebook;application/epub+zip;x-content/ebook-reader
+        Categories=Office;Graphics;Viewer' > Calibre.desktop
+        chmod +x Calibre.desktop
+
+        echo '#!/bin/bash
+        HERE="$(dirname "$(readlink -f "${0}")")"
+        cd /"$HERE"/calibre/
+        ./calibre' > AppRun
+        chmod +x AppRun
+
+        mkdir -p calibre/
+        cd calibre/
+        curl -o - https://download.calibre-ebook.com/$version/calibre-$version-x86_64.txz | tar -xJf -
+        pwd; ls -lah
+
+        cd ../
+        ln -s calibre/resources/content-server/calibre.png Calibre.png
+        cp ../README.md .
+        pwd; ls -lah
+
+        ## Add libxcb-cursor from Ubuntu
+        cd calibre/lib/
+        wget -q https://github.com/ryuuzaki42/Calibre_AppImage/releases/download/main-00000000/libxcb-cursor.so.0.0.0
+        ln -s libxcb-cursor.so.0.0.0 libxcb-cursor.so.0
+        pwd; ls -lah
+
+    #- name: Get appimagetool
+    #  run: |
+    #    set -x
+    #    #wget -q https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
+    #    #wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+
+    #    version_go_appimage=$(wget -q -O - https://api.github.com/repos/probonopd/go-appimage/releases | grep "\"name.*appimagetool-.*-x86_64.AppImage\"" | head -n 1 | cut -d '-' -f2)
+    #    echo "version_go_appimage: $version_go_appimage"
+    #    wget -q "https://github.com/probonopd/go-appimage/releases/download/continuous/appimagetool-$version_go_appimage-x86_64.AppImage" -O appimagetool-x86_64.AppImage
+    #    chmod +x appimagetool-x86_64.AppImage
+
+    - name: Get URUNTIME
+      run: |
+        set -x
+        wget -q https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-x86_64 -O uruntime
+        chmod +x uruntime
+        pwd; ls -lah
+
+    - name: Install llvm - URUNTIME
+      run: sudo apt install llvm
+
+    - name: Make AppImage
+      run: |
+        set -x
+        tag=1 #1
+        version=$(grep -o "Calibre:.*" README.md | cut -d ' ' -f2)
+        echo "Calibre version: $version - Tag: $tag"
+
+        #ARCH=x86_64 VERSION="${version}-${tag}_JB" ./appimagetool-x86_64.AppImage squashfs-root/
+
+        name_prog="Calibre-${version}-${tag}_JB-x86_64.AppImage"
+
+        # Add update information to runtime
+        UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*dwarfs-$ARCH.AppImage.zsync"
+        echo "Adding update information \"$UPINFO\" to runtime..."
+        printf "$UPINFO" > data.upd_info
+        llvm-objcopy --update-section=.upd_info=data.upd_info \
+            --set-section-flags=.upd_info=noload,readonly ./uruntime
+        printf 'AI\x02' | dd of=./uruntime bs=1 count=3 seek=8 conv=notrunc
+
+        echo "Generating AppImage..."
+        ./uruntime --appimage-mkdwarfs -f \
+            --set-owner 0 --set-group 0 \
+            --no-history --no-create-timestamp \
+            --compression zstd:level=22 -S26 -B8 \
+            --header uruntime \
+            -i ./squashfs-root/ -o $name_prog
+
+        echo "Generating zsync file..."
+        zsyncmake *.AppImage -u *.AppImage
+
+        fileName=$(ls Calibre*.AppImage)
+        echo "fileName: $fileName"
+        md5sum "$fileName" > "${fileName}.md5"
+        pwd; ls -lah
+
+    - uses: xresloader/upload-to-github-release@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          file: "Calibre*.AppImage; Calibre*.zsync; Calibre*.md5"
+          #overwrite: true
+          verbose: true
+          draft: false
+          default_release_name: "Calibre V in AppImage"
