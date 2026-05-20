@@ -38,6 +38,7 @@ jobs:
 
         wget https://archive.apache.org/dist/netbeans/netbeans/$version/netbeans-${version}-bin.zip
         unzip netbeans-${version}-bin.zip
+        rm -v netbeans-${version}-bin.zip
         pwd; ls -lah
 
         wget https://github.com/ryuuzaki42/NetBeans_AppImage/releases/download/main-0000/netbeans.svg
