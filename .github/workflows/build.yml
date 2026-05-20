@@ -112,7 +112,7 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          file: "NetBeans*.AppImage; NetBeans*.zsync; NetBeans*.md5; netbeans*zip; netbeans*zip.md5""
+          file: "NetBeans*.AppImage; NetBeans*.zsync; NetBeans*.md5; netbeans*zip; netbeans*zip.md5"
           #overwrite: true
           verbose: true
           draft: false
