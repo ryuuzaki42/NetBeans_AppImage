@@ -9,4 +9,6 @@ https://netbeans.apache.org/front/main/index.html
     NetBeans: 11.1
 
 ---
+https://github.com/codelerity/netbeans-packages
+
 https://archive.apache.org/dist/netbeans/netbeans/
