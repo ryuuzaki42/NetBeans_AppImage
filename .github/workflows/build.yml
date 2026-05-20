@@ -89,11 +89,11 @@ jobs:
         set -x
         tag=1 #1
         version=$(grep -o "NetBeans:.*" README.md | cut -d ' ' -f2)
-        echo "Calibre version: $version - Tag: $tag"
+        echo "NetBeans version: $version - Tag: $tag"
 
         #ARCH=x86_64 VERSION="${version}-${tag}_JB" ./appimagetool-x86_64.AppImage squashfs-root/
 
-        name_prog="Calibre-${version}-${tag}_JB-x86_64.AppImage"
+        name_prog="NetBeans-${version}-${tag}_JB-x86_64.AppImage"
 
         # Add update information to runtime
         UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*dwarfs-$ARCH.AppImage.zsync"
@@ -114,7 +114,7 @@ jobs:
         echo "Generating zsync file..."
         zsyncmake *.AppImage -u *.AppImage
 
-        fileName=$(ls Calibre*.AppImage)
+        fileName=$(ls NetBeans*.AppImage)
         echo "fileName: $fileName"
         md5sum "$fileName" > "${fileName}.md5"
         pwd; ls -lah
@@ -123,8 +123,8 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          file: "Calibre*.AppImage; Calibre*.zsync; Calibre*.md5"
+          file: "NetBeans*.AppImage; NetBeans*.zsync; NetBeans*.md5"
           #overwrite: true
           verbose: true
           draft: false
-          default_release_name: "Calibre V in AppImage"
+          default_release_name: "NetBeans V in AppImage"
