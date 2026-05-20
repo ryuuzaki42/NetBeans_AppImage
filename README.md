@@ -1,15 +1,12 @@
 
-# Calibre_AppImage
+# NetBeans_AppImage
 
-Calibre is a cross-platform free and open-source suite of e-book software
+NetBeans is an integrated development environment (IDE) for Java
 
-https://calibre-ebook.com/
+https://netbeans.apache.org/front/main/index.html
 
-## Repository: https://github.com/ryuuzaki42/Calibre_AppImage
-    Calibre: 9.8.0
-
----
-Based on: https://github.com/KushagraKarira/calibre-appimage
+## Repository: https://github.com/ryuuzaki42/NetBeans_AppImage
+    NetBeans: 11.1
 
 ---
-https://calibre-ebook.com/download_linux
+https://archive.apache.org/dist/netbeans/netbeans/
