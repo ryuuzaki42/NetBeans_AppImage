@@ -19,10 +19,10 @@ jobs:
     - name: Install fuse and libfuse2
       run: sudo apt install fuse libfuse2
 
-    - name: Make Calibre AppDir/
+    - name: Make NetBeans AppDir/
       run: |
         set -x
-        version=$(grep -o "Calibre:.*" README.md | cut -d ' ' -f2)
+        version=$(grep -o "NetBeans:.*" README.md | cut -d ' ' -f2)
 
         mkdir squashfs-root/
         cd squashfs-root/
@@ -45,7 +45,7 @@ jobs:
 
         mkdir -p calibre/
         cd calibre/
-        curl -o - https://download.calibre-ebook.com/$version/calibre-$version-x86_64.txz | tar -xJf -
+        curl -o - https://archive.apache.org/dist/netbeans/netbeans/$version/netbeans-${version}-bin.zip | tar -xJf -
         pwd; ls -lah
 
         cd ../
@@ -54,10 +54,10 @@ jobs:
         pwd; ls -lah
 
         ## Add libxcb-cursor from Ubuntu
-        cd calibre/lib/
-        wget -q https://github.com/ryuuzaki42/Calibre_AppImage/releases/download/main-00000000/libxcb-cursor.so.0.0.0
-        ln -s libxcb-cursor.so.0.0.0 libxcb-cursor.so.0
-        pwd; ls -lah
+        #cd calibre/lib/
+        #wget -q https://github.com/ryuuzaki42/Calibre_AppImage/releases/download/main-00000000/libxcb-cursor.so.0.0.0
+        #ln -s libxcb-cursor.so.0.0.0 libxcb-cursor.so.0
+        #pwd; ls -lah
 
     #- name: Get appimagetool
     #  run: |
@@ -84,7 +84,7 @@ jobs:
       run: |
         set -x
         tag=1 #1
-        version=$(grep -o "Calibre:.*" README.md | cut -d ' ' -f2)
+        version=$(grep -o "NetBeans:.*" README.md | cut -d ' ' -f2)
         echo "Calibre version: $version - Tag: $tag"
 
         #ARCH=x86_64 VERSION="${version}-${tag}_JB" ./appimagetool-x86_64.AppImage squashfs-root/
