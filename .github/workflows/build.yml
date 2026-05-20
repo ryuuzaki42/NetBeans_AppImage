@@ -39,8 +39,8 @@ jobs:
 
         echo '#!/bin/bash
         HERE="$(dirname "$(readlink -f "${0}")")"
-        cd /"$HERE"/calibre/
-        ./calibre' > AppRun
+        cd /"$HERE"/netbeans/bin/
+        ./netbeans' > AppRun
         chmod +x AppRun
 
         #mkdir -p calibre/
